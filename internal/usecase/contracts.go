@@ -18,7 +18,7 @@ type (
 		Get(ctx context.Context, userID, taskID string) (entity.Task, error)
 		List(ctx context.Context, userID string, status *entity.TaskStatus, limit, offset int) ([]entity.Task, int, error)
 		Delete(ctx context.Context, userID, taskID string) error
-		Update(ctx context.Context, userID, taskID string, title, description string) (entity.Task, error)
+		Update(ctx context.Context, userID, taskID, title, description string) (entity.Task, error)
 		Transition(ctx context.Context, userID, taskID string, newStatus entity.TaskStatus) (entity.Task, error)
 	}
 )
