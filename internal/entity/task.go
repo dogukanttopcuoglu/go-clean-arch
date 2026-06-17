@@ -13,13 +13,13 @@ const (
 )
 
 type Task struct {
-	ID          string
-	UserID      string
-	Title       string
-	Description string
-	Status      TaskStatus
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID          string     `json:"id"`
+	UserID      string     `json:"user_id"`
+	Title       string     `json:"title"`
+	Description string     `json:"description"`
+	Status      TaskStatus `json:"status"`
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
 }
 
 // Valid reports whether s is a known task status.
