@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/dogukanttopcuoglu/clean-lab/config"
 	"github.com/dogukanttopcuoglu/clean-lab/internal/controller/restapi"
 	"github.com/dogukanttopcuoglu/clean-lab/internal/repo/memory"
 	"github.com/dogukanttopcuoglu/clean-lab/internal/usecase/task"
@@ -9,13 +10,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func Run() error {
+func Run(cfg *config.Config) error {
 	fiberApp := fiber.New()
 
 	appLogger, err := logger.New(logger.Options{
-		Environment: "development",
-		Level:       "debug",
-		ServiceName: "clean-lab-api",
+		Environment: cfg.App.Environment,
+		Level:       cfg.Logger.Level,
+		ServiceName: cfg.Logger.ServiceName,
 	})
 	if err != nil {
 		return err
@@ -33,6 +34,8 @@ func Run() error {
 
 	restapi.NewRouter(fiberApp, userUseCase, taskUseCase, appLogger)
 
-	appLogger.Info("http server listening on :8080")
-	return fiberApp.Listen(":8080")
+	addr := ":" + cfg.HTTP.Port
+
+	appLogger.Info("http server listening on " + addr)
+	return fiberApp.Listen(addr)
 }
