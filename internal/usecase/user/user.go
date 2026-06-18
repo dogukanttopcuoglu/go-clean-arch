@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/dogukanttopcuoglu/clean-lab/internal/entity"
@@ -22,6 +23,12 @@ func New(r repo.UserRepo) *UseCase {
 }
 
 func (uc *UseCase) Register(ctx context.Context, username, email, password string) (entity.User, error) {
+	username = strings.TrimSpace(username)
+	email = strings.TrimSpace(email)
+
+	if username == "" || email == "" || strings.TrimSpace(password) == "" {
+		return entity.User{}, entity.ErrInvalidInput
+	}
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return entity.User{}, fmt.Errorf("UserUseCase - Register - bcrypt.GenerateFromPassword: %w", err)

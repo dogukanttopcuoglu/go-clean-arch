@@ -3,10 +3,10 @@ package entity
 import "time"
 
 type User struct {
-	ID           string
-	Username     string
-	Email        string
-	PasswordHash string // hash cünkü raw password business object icinde tutulmaz
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
+	ID           string    `json:"id"`
+	Username     string    `json:"username"`
+	Email        string    `json:"email"`
+	PasswordHash string    `json:"-"` // hash cünkü raw password business object icinde tutulmaz
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
 }
