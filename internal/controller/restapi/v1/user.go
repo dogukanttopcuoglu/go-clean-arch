@@ -14,6 +14,7 @@ func (r *V1) register(ctx *fiber.Ctx) error {
 	var body request.Register
 
 	if err := ctx.BodyParser(&body); err != nil {
+		r.log.Error(err, "restapi - v1 - register - invalid request body")
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
 	user, err := r.userUseCase.Register(

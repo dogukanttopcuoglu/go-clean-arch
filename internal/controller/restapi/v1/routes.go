@@ -2,13 +2,15 @@ package v1
 
 import (
 	"github.com/dogukanttopcuoglu/clean-lab/internal/usecase"
+	"github.com/dogukanttopcuoglu/clean-lab/pkg/logger"
 	"github.com/gofiber/fiber/v2"
 )
 
-func NewRoutes(apiV1Group fiber.Router, u usecase.User, tk usecase.Task) {
+func NewRoutes(apiV1Group fiber.Router, u usecase.User, tk usecase.Task, log logger.Logger) {
 	r := &V1{
 		taskUseCase: tk,
 		userUseCase: u,
+		log:         log,
 	}
 
 	taskGroup := apiV1Group.Group("/tasks")
