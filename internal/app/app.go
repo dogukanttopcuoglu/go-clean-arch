@@ -6,13 +6,11 @@ import (
 	"github.com/dogukanttopcuoglu/clean-lab/internal/repo/memory"
 	"github.com/dogukanttopcuoglu/clean-lab/internal/usecase/task"
 	"github.com/dogukanttopcuoglu/clean-lab/internal/usecase/user"
+	"github.com/dogukanttopcuoglu/clean-lab/pkg/httpserver"
 	"github.com/dogukanttopcuoglu/clean-lab/pkg/logger"
-	"github.com/gofiber/fiber/v2"
 )
 
 func Run(cfg *config.Config) error {
-	fiberApp := fiber.New()
-
 	appLogger, err := logger.New(logger.Options{
 		Environment: cfg.App.Environment,
 		Level:       cfg.Logger.Level,
@@ -32,10 +30,11 @@ func Run(cfg *config.Config) error {
 	userUseCase := user.New(userRepo)
 	taskUseCase := task.New(taskRepo)
 
-	restapi.NewRouter(fiberApp, userUseCase, taskUseCase, appLogger)
+	httpServer := httpserver.New(
+		appLogger,
+		httpserver.Port(cfg.HTTP.Port),
+	)
 
-	addr := ":" + cfg.HTTP.Port
-
-	appLogger.Info("http server listening on " + addr)
-	return fiberApp.Listen(addr)
+	restapi.NewRouter(httpServer.App, userUseCase, taskUseCase, appLogger)
+	return httpServer.Start()
 }
