@@ -1,0 +1,7 @@
+app:
+  environment: development
+http:
+  port: "9090"
+logger:
+  level: debug
+  service_name: clean-lab-api
