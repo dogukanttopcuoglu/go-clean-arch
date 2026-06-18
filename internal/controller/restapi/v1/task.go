@@ -17,11 +17,13 @@ func (r *V1) createTask(ctx *fiber.Ctx) error {
 	var body request.CreateTask
 
 	if err := ctx.BodyParser(&body); err != nil {
+		r.log.Warn(err, "restapi - v1 - create task - invalid request body")
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
 
 	task, err := r.taskUseCase.Create(ctx.UserContext(), temporaryUserID, body.Title, body.Description)
 	if err != nil {
+		r.log.Error(err, "restapi - v1 - create task - unexpected error")
 		return errorResponse(ctx, http.StatusInternalServerError, "internal server error")
 	}
 
@@ -58,6 +60,7 @@ func (r *V1) listTasks(ctx *fiber.Ctx) error {
 		offset,
 	)
 	if err != nil {
+		r.log.Error(err, "restapi - v1 - list tasks - unexpected error")
 		return errorResponse(ctx, http.StatusInternalServerError, "internal server error")
 	}
 
@@ -79,8 +82,8 @@ func (r *V1) getTask(ctx *fiber.Ctx) error {
 		if errors.Is(err, entity.ErrTaskForbidden) {
 			return errorResponse(ctx, http.StatusForbidden, "forbidden")
 		}
-
-		return errorResponse(ctx, http.StatusInternalServerError, "internal server error ")
+		r.log.Error(err, "restapi - v1 - get task - unexpected error")
+		return errorResponse(ctx, http.StatusInternalServerError, "internal server error")
 	}
 
 	return ctx.Status(http.StatusOK).JSON(task)
@@ -92,6 +95,7 @@ func (r *V1) updateTask(ctx *fiber.Ctx) error {
 	var body request.UpdateTask
 
 	if err := ctx.BodyParser(&body); err != nil {
+		r.log.Warn(err, "restapi - v1 - update task - invalid request body")
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
 
@@ -123,6 +127,7 @@ func (r *V1) transitionTask(ctx *fiber.Ctx) error {
 	var body request.TranstitionTask
 
 	if err := ctx.BodyParser(&body); err != nil {
+		r.log.Warn(err, "restapi - v1 - transition task - invalid request body")
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
 
@@ -148,7 +153,7 @@ func (r *V1) transitionTask(ctx *fiber.Ctx) error {
 		if errors.Is(err, entity.ErrInvalidTransition) {
 			return errorResponse(ctx, http.StatusBadRequest, "invalid status transition")
 		}
-
+		r.log.Error(err, "restapi - v1 - transition task - unexpected error")
 		return errorResponse(ctx, http.StatusInternalServerError, "internal server error")
 	}
 
@@ -167,7 +172,7 @@ func (r *V1) deleteTask(ctx *fiber.Ctx) error {
 		if errors.Is(err, entity.ErrTaskForbidden) {
 			return errorResponse(ctx, http.StatusForbidden, "forbidden")
 		}
-
+		r.log.Error(err, "restapi - v1 - delete task - unexpected error")
 		return errorResponse(ctx, http.StatusInternalServerError, "internal server error")
 	}
 

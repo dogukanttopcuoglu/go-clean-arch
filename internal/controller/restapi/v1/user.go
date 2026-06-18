@@ -14,7 +14,7 @@ func (r *V1) register(ctx *fiber.Ctx) error {
 	var body request.Register
 
 	if err := ctx.BodyParser(&body); err != nil {
-		r.log.Error(err, "restapi - v1 - register - invalid request body")
+		r.log.Warn(err, "restapi - v1 - register - invalid request body")
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
 	user, err := r.userUseCase.Register(
@@ -31,7 +31,7 @@ func (r *V1) register(ctx *fiber.Ctx) error {
 		if errors.Is(err, entity.ErrUserAlreadyExists) {
 			return errorResponse(ctx, http.StatusBadRequest, "could not register with provided credentials")
 		}
-
+		r.log.Error(err, "restapi - v1 - register - unexpected error")
 		return errorResponse(ctx, http.StatusInternalServerError, "internal server error")
 	}
 
@@ -42,6 +42,7 @@ func (r *V1) login(ctx *fiber.Ctx) error {
 	var body request.Login
 
 	if err := ctx.BodyParser(&body); err != nil {
+		r.log.Warn(err, "restapi - v1 - login - invalid request body")
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request")
 	}
 
@@ -55,7 +56,7 @@ func (r *V1) login(ctx *fiber.Ctx) error {
 		if errors.Is(err, entity.ErrInvalidCredentials) {
 			return errorResponse(ctx, http.StatusUnauthorized, "invalid credentials")
 		}
-
+		r.log.Error(err, "restapi - v1 - login - unexpected error")
 		return errorResponse(ctx, http.StatusInternalServerError, "internal server error")
 	}
 
