@@ -153,7 +153,7 @@ func (r *Repo) Update(ctx context.Context, task *entity.Task) error {
 func (r *Repo) Delete(ctx context.Context, userID, taskID string) error {
 	sql, args, err := r.Builder.
 		Delete("tasks").
-		Where(sq.Eq{"id": taskID, "user_id": userID}).
+		Where(sq.Eq{"id": userID, "user_id": userID}).
 		ToSql()
 	if err != nil {
 		return fmt.Errorf("TaskRepo - Delete - r.Builder: %w", err)
